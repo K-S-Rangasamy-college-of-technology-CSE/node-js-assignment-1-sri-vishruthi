@@ -1,0 +1,29 @@
+const dns = require('dns');
+
+function resolveHostname(hostname) {
+    dns.resolve4(hostname, (err, addresses) => {
+        if (err) {
+            console.error(`Error resolving ${hostname}:`, err.message);
+            return;
+        }
+        console.log(`IP addresses for ${hostname}: ${addresses.join(', ')}`);
+    });
+}
+
+function lookupHostname(hostname) {
+    dns.lookup(hostname, (err, address, family) => {
+        if (err) {
+            console.error(`Error looking up ${hostname}:`, err.message);
+            return;
+        }
+        console.log(`Address for ${hostname}: ${address} (IPv${family})`);
+    });
+}
+
+const hostname = 'example.com';
+
+console.log(`Resolving hostname: ${hostname}`);
+resolveHostname(hostname);
+
+console.log(`Looking up hostname: ${hostname}`);
+lookupHostname(hostname);
