@@ -1,0 +1,28 @@
+const repl = require('repl');
+
+function checkOddEven(number) {
+    if (number % 2 === 0) {
+        console.log(`${number} is Even.`);
+    } else {
+        console.log(`${number} is Odd.`);
+    }
+}
+
+const r = repl.start('Enter a number: ');
+
+r.eval = (cmd, context, filename, callback) => {
+    const trimmedCmd = cmd.trim();
+    
+    const number = parseFloat(trimmedCmd);
+    if (!isNaN(number)) {
+        checkOddEven(number);
+        callback(null, `Checked: ${trimmedCmd}`);
+    } else {
+        callback(null, 'Please enter a valid number.');
+    }
+};
+
+r.on('exit', () => {
+    console.log('Exiting REPL. Goodbye!');
+    process.exit();
+});
