@@ -1,0 +1,45 @@
+const net = require('net');
+
+const PORT = 3000;
+const HOST = '127.0.0.1';
+
+const server = net.createServer((socket) => {
+    console.log('Client connected:', socket.remoteAddress);
+
+    socket.on('data', (data) => {
+        console.log('Received from client:', data.toString());
+        socket.write(`Server received: ${data}`);
+    });
+
+    socket.on('end', () => {
+        console.log('Client disconnected:', socket.remoteAddress);
+    });
+
+    socket.on('error', (err) => {
+        console.error('Socket error:', err);
+    });
+});
+
+server.listen(PORT, () => {
+    console.log(`TCP Server listening on ${HOST}:${PORT}`);
+});
+
+const client = new net.Socket();
+client.connect(PORT, HOST, () => {
+    console.log(`Connected to server at ${HOST}:${PORT}`);
+    client.write('Hello, Server!');
+});
+
+client.on('data', (data) => {
+    console.log('Received from server:', data.toString());
+    // Close the client after receiving the response
+    client.destroy();
+});
+
+client.on('close', () => {
+    console.log('Connection closed');
+});
+
+client.on('error', (err) => {
+    console.error('Client error:', err);
+});
